@@ -18,8 +18,6 @@ sheet_10 = book['Лист10']
 sheet_11 = book['Лист11']
 
 
-
-
 def main():
     updater = Updater(token=TOKEN)  # объект, который ловит сообщения от Telegrama
 
@@ -28,15 +26,22 @@ def main():
     start_help = CommandHandler('help', do_help)
     start_handler = CommandHandler('start', do_start)
     learn_handler = CommandHandler('learn', do_learn)
+    cheker_handler = CommandHandler('chek',do_cheker)
+    set_handler = CommandHandler('setcellvalue' ,do_setvalue)
+    #setcellvalue_handler = MessageHandler(Filters.text ,do_setcellvalue)
+    #chekercheker_handler = MessageHandler(Filters.text, do_chek)
     changeclass_handler = MessageHandler(Filters.text, do_changeclass)
-    some_handler = MessageHandler(Filters.text, do_some)
     echo = MessageHandler(Filters.all, do_echo)
 
     dispather.add_handler(learn_handler)
     dispather.add_handler(start_help)
     dispather.add_handler(start_handler)
+    dispather.add_handler(cheker_handler)
+    dispather.add_handler(set_handler)
     dispather.add_handler(changeclass_handler)
-    dispather.add_handler(some_handler)
+    #dispather.add_handler(chekercheker_handler)
+    #dispather.add_handler(setcellvalue_handler)
+
     dispather.add_handler(echo)
 
     updater.start_polling()
@@ -66,19 +71,41 @@ def do_help(update, context):
                              )
 
 
-def do_some(update: Update, context):
+#def do_chek(update,context):
+    #text = update.message.text
+
+    #if text == 'ячейки_класс7':
+       # update.message.reply_text(f'Список доступных ячеек'
+                              #f'\nТема -A2:{sheet_7["A2"].value}'
+                             # f'\nМатериалы(ссылки) -C2:{sheet_7["C2"].value} D2:{sheet_7["D2"].value}'
+                              #f'\nМатериалы(ссылки) -C3:{sheet_7["C2"].value} D3:{sheet_7["D3"].value}'
+                              #f'\nМатериалы(ссылки) -C4:{sheet_7["C2"].value} D4:{sheet_7["D4"].value}'
+                              #f'\nТесты - E2:{sheet_7["E2"].value} F2:{sheet_7["F2"].value}'
+                              #f'\nТесты - E3:{sheet_7["E3"].value} F3:{sheet_7["F3"].value}'
+                              #f'\nТесты - E4:{sheet_7["E4"].value} F4:{sheet_7["F4"].value}', reply_markup=ReplyKeyboardRemove())
+
+
+def do_cheker(update,context):
+    keyboard = [['ячейки_класс7'], ['ячейки_класс8'], ['ячейки_класс9'],
+                ['ячейки_класс10'], ['ячейки_класс11']]
+    reply_markup = ReplyKeyboardMarkup(keyboard=keyboard, one_time_keyboard=True, resize_keyboard=True)
+    update.message.reply_text('Выберите класс.', reply_markup=reply_markup)
+
+
+def do_setvalue(update,context):
     text = update.message.text
 
-    if text == 'Поиск Items':
-        update.message.reply_text('', reply_markup=ReplyKeyboardRemove())
-    elif text == 'Список недавно просмотренных Items':
-        update.message.reply_text('Скоро...', reply_markup=ReplyKeyboardRemove())
-    elif text == 'Отслеживание стоимости Items':
-        update.message.reply_text('Скоро...', reply_markup=ReplyKeyboardRemove())
-    elif text == 'Список ваших Items':
-        update.message.reply_text('Скоро...', reply_markup=ReplyKeyboardRemove())
-    else:
-        update.message.reply_text('чаво', reply_markup=ReplyKeyboardRemove())
+
+
+
+#def do_setcellvalue(update,context):
+    #text = update.message.text
+
+    #a = input()
+    #b = input()
+
+    #if text == 'менять_класс7':
+       # sheet_7[a] = b
 
 
 def do_learn(update, context):
@@ -90,6 +117,16 @@ def do_learn(update, context):
 
 def do_changeclass(update: Update, context):
     text = update.message.text
+
+    if text == 'ячейки_класс7':
+        update.message.reply_text(f'Список доступных ячеек'
+                              f'\nТема -A2:{sheet_7["A2"].value}'
+                              f'\nМатериалы(ссылки) -C2:{sheet_7["C2"].value} D2:{sheet_7["D2"].value}'
+                              f'\nМатериалы(ссылки) -C3:{sheet_7["C2"].value} D3:{sheet_7["D3"].value}'
+                              f'\nМатериалы(ссылки) -C4:{sheet_7["C2"].value} D4:{sheet_7["D4"].value}'
+                              f'\nТесты - E2:{sheet_7["E2"].value} F2:{sheet_7["F2"].value}'
+                              f'\nТесты - E3:{sheet_7["E3"].value} F3:{sheet_7["F3"].value}'
+                              f'\nТесты - E4:{sheet_7["E4"].value} F4:{sheet_7["F4"].value}', reply_markup=ReplyKeyboardRemove())
 
     if text == '7класс':
         keyboard = [[sheet_7["A2"].value], ['тема2'], ['тема3'],
@@ -108,11 +145,11 @@ def do_changeclass(update: Update, context):
         update.message.reply_text('Выберите, то с чего хотите начать.', reply_markup=reply_markup)
 
     elif text == f'{sheet_7["C2"].value}':
-        update.message.reply_text(f'{sheet_7["D2"].value}')
+        update.message.reply_text(f'{sheet_7["D2"].value}', reply_markup=ReplyKeyboardRemove())
     elif text == f'{sheet_7["C3"].value}':
-        update.message.reply_text(f'{sheet_7["D3"].value}')
+        update.message.reply_text(f'{sheet_7["D3"].value}', reply_markup=ReplyKeyboardRemove())
     elif text == f'{sheet_7["C4"].value}':
-        update.message.reply_text(f'{sheet_7["D4"].value}')
+        update.message.reply_text(f'{sheet_7["D4"].value}', reply_markup=ReplyKeyboardRemove())
 
     if text == f'Тесты по "{sheet_7["A2"].value}"':
         keyboard = [[sheet_7["E2"].value], [sheet_7["E3"].value], [sheet_7["E4"].value]]
@@ -120,11 +157,11 @@ def do_changeclass(update: Update, context):
         update.message.reply_text('Выбирите тест.', reply_markup=reply_markup)
 
     elif text == f'{sheet_7["E2"].value}':
-        update.message.reply_text(f'{sheet_7["F2"].value}')
+        update.message.reply_text(f'{sheet_7["F2"].value}', reply_markup=ReplyKeyboardRemove())
     elif text == f'{sheet_7["E3"].value}':
-        update.message.reply_text(f'{sheet_7["F3"].value}')
+        update.message.reply_text(f'{sheet_7["F3"].value}', reply_markup=ReplyKeyboardRemove())
     elif text == f'{sheet_7["E4"].value}':
-        update.message.reply_text(f'{sheet_7["F4"].value}')
+        update.message.reply_text(f'{sheet_7["F4"].value}', reply_markup=ReplyKeyboardRemove())
 
 
 main()
