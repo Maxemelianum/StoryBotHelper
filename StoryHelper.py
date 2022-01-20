@@ -23,6 +23,7 @@ COLUMN_MATERIAL_LINK = 4
 COLUMN_TEST = 5
 COLUMN_TEST_LINK = 6
 
+page = book[]
 
 
 def main():
@@ -51,6 +52,7 @@ def main():
 
 def do_echo(update: Update, context):
     update.message.reply_text('ЧаВо?')
+
 
 
 
@@ -135,25 +137,67 @@ def do_changeclass(update: Update, context):
  #  elif text == f'{sheet_7["E4"].value}':
 #        update.message.reply_text(f'{sheet_7["F4"].value}', reply_markup=ReplyKeyboardRemove())
 
-    theme = []
-    answer = []
-    test = []
-    material = []
+    if text == 'Материалы':
+        return do_material_check(update, context)
+
+    if text == 'Тесты':
+        return do_test_check(update, context)
 
     if text == '/check_value':
+        return do_learn(update, context)
 
-        for line in range(2, sheet_7.max_row + 1):
-            theme.append(sheet_7.cell(row=line, column=COLUMN_THEME).value)
-        theme = set(theme)
-        keyboard = [theme]
-        key_board = ReplyKeyboardMarkup(keyboard=keyboard, one_time_keyboard=True, resize_keyboard=True)
-        update.message.reply_text('Посмотрите', reply_markup=key_board)
-        answer1 = update.message.text
 
-        for line in range(2, sheet_7.max_row + 1):
-            value = sheet_7.cell(row=line, column=COLUMN_THEME).value
-            if value == answer1:
-                answer1.append(sheet_7.cell(row=line, column=COLUMN_MATERIAL).value)
+def do_theme_check(update, context): #проверяет существующие темы
+    theme = []
+    for line in range(2, sheet_7.max_row + 1):
+        theme.append(sheet_7.cell(row=line, column=COLUMN_THEME).value)
+    theme = set(theme)
+    keyboard = [theme]
+    key_board = ReplyKeyboardMarkup(keyboard=keyboard, one_time_keyboard=True, resize_keyboard=True)
+    update.message.reply_text('Посмотрите', reply_markup=key_board)
+    answer = update.message.text
+    return do_quest(update, context)
+
+
+def do_quest(update, context): # материалы или тесты
+    keyboard = [['Материалы'], ['Тесты']]
+    key_board = ReplyKeyboardMarkup(keyboard=keyboard, one_time_keyboard=True, resize_keyboard=True)
+    update.message.reply_text('Посмотрите', reply_markup=key_board)
+
+
+def do_material_check(update, context): # смотрит все материалы для заданной темы
+    material = []
+
+    for line in range(2, sheet_7.max_row + 1):
+        value = sheet_7.cell(row=line, column=COLUMN_THEME).value
+        if value == answer:
+            material.append(sheet_7.cell(row=line, column=COLUMN_MATERIAL).value)
+            keyboard = [material]
+            key_board = ReplyKeyboardMarkup(keyboard=keyboard, one_time_keyboard=True, resize_keyboard=True)
+            update.message.reply_text('Посмотрите', reply_markup=key_board)
+
+
+def do_test_check(update, contex): # смотрит все тесты для заданной темы
+    test = []
+
+    for line in range(2, sheet_7.max_row + 1):
+        value = sheet_7.cell(row=line, column=COLUMN_THEME).value
+        if value == answer:
+            test.append(sheet_7.cell(row=line, column=COLUMN_TEST).value)
+            keyboard = [test]
+            key_board = ReplyKeyboardMarkup(keyboard=keyboard, one_time_keyboard=True, resize_keyboard=True)
+            update.message.reply_text('Посмотрите', reply_markup=key_board)
+
+
+#def do_set_theme_name(update, context):
+
+#def do_set_material_name(update, context):
+
+#def do_set_test_name(update, context):
+
+#def do_set_material_link(update, context):
+
+#def do_set_test_link(update, context):
 
 
 main()
